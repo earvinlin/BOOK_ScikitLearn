@@ -55,3 +55,35 @@ print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 scaler = preprocessing.StandardScaler()     # 依標準化(StandardScaler)類別建立物件
 X_train_std = scaler.fit_transform(X_train) # 呼叫fit_transform，表先訓練，再作特縮放
 X_test_std = scaler.transform(X_test)       # 僅呼叫transform，表測試資料不參與訓練，只作特徵縮放
+
+from sklearn.linear_model import LogisticRegression
+clf = LogisticRegression()
+
+clf.fit(X_train_std, y_train)
+y_pred = clf.predict(X_test_std)
+print("30筆測試資料預測結果(0~2為品種代碼)=\n ", y_pred)
+
+# 計算準確率
+print("計算準確率= ", f'{accuracy_score(y_test, y_pred)*100:.2f}%')
+
+# 使用混淆矩陣
+from sklearn.metrics import confusion_matrix
+print(confusion_matrix(y_test, y_pred))
+
+# 混淆矩陣圖
+from sklearn.metrics import ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+disp =  ConfusionMatrixDisplay(confusion_matrix=confusion_matrix(y_test, y_pred), display_labels=ds.target_names)
+disp.plot()
+plt.show()
+
+# 模型儲存
+import joblib
+
+joblib.dump(clf, 'model.joblib')
+joblib.dump(scaler, 'scaler.joblib')
+
+
+
+
