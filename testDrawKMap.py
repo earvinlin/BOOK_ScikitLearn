@@ -68,6 +68,6 @@ def PeriodToMs(period):
 
 
 if __name__ == "__main__":
-    klines = GetKline(df)
+    klines = GetKline(df,'test', '1d')
     print(klines)
 #    mpf.plot(klines)
