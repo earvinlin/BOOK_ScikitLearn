@@ -17,12 +17,14 @@ df =pd.read_csv('1101.csv')
 
 # # Get Market Data
 def GetKline(pair, symbol, interval, startTime = None, endTime = None):
-    df = pd.DataFrame(pair, columns=['date', 'open', 'high', 'low', 'close', 'volume'])
+    df = pair
+#    df = pd.DataFrame(pair, columns=['date', 'open', 'high', 'low', 'close', 'volume'])
     df.date = pd.to_datetime(df.date)
     df.set_index("date", inplace=True)
     df = df.astype(float)
     return df
 
+"""
 def GetHistoricalKline(url, symbol, interval, startTime):
     # init
     klines = GetKline(url, symbol, interval)
@@ -37,11 +39,13 @@ def GetHistoricalKline(url, symbol, interval, startTime):
         klines  = pd.concat([tmpdata, klines])
 
     return klines.drop_duplicates(keep='first', inplace=False)
+"""
 
 # Math Tools
 def ToMs(date):
     return int(time.mktime(time.strptime(str(date), "%Y-%m-%d %H:%M:%S")) * 1000) # Binance timestamp format is 13 digits
 
+"""
 def PeriodToMs(period):
     Ms = None
     ToSeconds = {
@@ -58,16 +62,26 @@ def PeriodToMs(period):
         except ValueError:
             pass
     return Ms
+"""
 
-
-
+def RSI(df, period):
+    return abstract.RSI(df, timeperiod=period)
 
 
 #sns.boxplot(data=df)
 #plt.show()
-
+symbol = '1101 Chart'
 
 if __name__ == "__main__":
     klines = GetKline(df,'test', '1d')
     print(klines)
 #    mpf.plot(klines)
+#    mpf.plot(klines, type = 'candle') # 蠟燭圖
+#    mpf.plot(klines, type = 'line') # 線圖
+#    mpf.plot(klines, type = 'line', title = '1101 Chart')
+#    mpf.plot(klines, type = 'candle', title = symbol, mav = 10)
+    # 多組均線可以利用元組達成
+#    mpf.plot(klines, type = 'candle', title = symbol, mav = (5, 10, 20))
+
+    index  = mpf.make_addplot(RSI(klines, 14), panel = 2, ylabel = 'RSI')
+    mpf.plot(klines, type = 'candle', title = symbol, addplot = [index], volume = True)
